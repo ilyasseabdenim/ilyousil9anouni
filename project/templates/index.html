@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Moroccan Law Assistant | AI-Powered Legal Help</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <meta name="description" content="AI-powered assistant for Moroccan legal questions. Get information about Moroccan law, codes, and regulations.">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <div class="logo">
+                <i class="fas fa-scale-balanced"></i>
+                <h1>Moroccan Law Assistant</h1>
+            </div>
+            <div class="language-select">
+                <select id="language-selector">
+                    <option value="en">English</option>
+                    <option value="fr">Français</option>
+                    <option value="ar">العربية</option>
+                </select>
+            </div>
+        </header>
+
+        <main>
+            <div class="intro" id="intro-text">
+                <h2>Your AI Legal Assistant for Moroccan Law</h2>
+                <p>Ask questions about Moroccan legal codes, procedures, and regulations.</p>
+                <div class="features">
+                    <div class="feature">
+                        <i class="fas fa-book-open"></i>
+                        <span>Legal Codes</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-gavel"></i>
+                        <span>Court Procedures</span>
+                    </div>
+                    <div class="feature">
+                        <i class="fas fa-file-contract"></i>
+                        <span>Legal Documents</span>
+                    </div>
+                </div>
+                <p class="disclaimer">This is an AI assistant and should not replace professional legal advice.</p>
+            </div>
+
+            <div class="suggestion-chips">
+                <button class="suggestion-chip" data-query="What are the requirements for starting a business in Morocco?">Starting a business</button>
+                <button class="suggestion-chip" data-query="Explain the Moroccan family code (Moudawana).">Family code</button>
+                <button class="suggestion-chip" data-query="What are the property ownership laws for foreigners in Morocco?">Property laws</button>
+                <button class="suggestion-chip" data-query="How does divorce work under Moroccan law?">Divorce procedures</button>
+            </div>
+
+            <div class="chat-container">
+                <div class="chat-messages" id="chat-messages">
+                    <div class="message bot-message">
+                        <div class="message-avatar">
+                            <i class="fas fa-robot"></i>
+                        </div>
+                        <div class="message-content">
+                            <p>مرحبا! Hello! Bonjour! How can I help you with Moroccan law today?</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="chat-input">
+                    <textarea id="user-input" placeholder="Type your legal question here..."></textarea>
+                    <button id="send-button"><i class="fas fa-paper-plane"></i></button>
+                </div>
+            </div>
+        </main>
+
+        <footer>
+            <p>© 2025 Moroccan Law Assistant | <span class="disclaimer-text">For informational purposes only. Not legal advice.</span></p>
+            <div class="footer-links">
+                <a href="#" id="about-link">About</a>
+                <a href="#" id="privacy-link">Privacy Policy</a>
+                <a href="#" id="terms-link">Terms of Use</a>
+            </div>
+        </footer>
+    </div>
+
+    <!-- Modal dialogs -->
+    <div class="modal" id="about-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>About Moroccan Law Assistant</h2>
+            <p>This AI-powered legal assistant is designed to provide information about Moroccan law. It uses advanced AI technology to interpret and respond to legal questions related to Moroccan legislation.</p>
+            <p>The assistant can help with information about:</p>
+            <ul>
+                <li>Civil law and the Moroccan Civil Code</li>
+                <li>Family law and the Moudawana (Family Code)</li>
+                <li>Commercial and business law</li>
+                <li>Property and real estate regulations</li>
+                <li>Labor law and employment rights</li>
+                <li>And many other legal domains specific to Morocco</li>
+            </ul>
+            <p>While this assistant provides helpful information, it should not replace professional legal advice from a qualified Moroccan lawyer.</p>
+        </div>
+    </div>
+
+    <div class="modal" id="privacy-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Privacy Policy</h2>
+            <p>Your privacy is important to us. This policy outlines how we handle your information when you use the Moroccan Law Assistant.</p>
+            <h3>Information Collection</h3>
+            <p>We collect your questions and interactions with the chatbot to improve the service and provide accurate responses.</p>
+            <h3>Use of Information</h3>
+            <p>Your questions may be used anonymously to train and improve our AI systems. No personally identifiable information is stored with your questions.</p>
+            <h3>Data Security</h3>
+            <p>We implement appropriate security measures to protect your information from unauthorized access or disclosure.</p>
+        </div>
+    </div>
+
+    <div class="modal" id="terms-modal">
+        <div class="modal-content">
+            <span class="close-button">&times;</span>
+            <h2>Terms of Use</h2>
+            <p>By using the Moroccan Law Assistant, you agree to these terms:</p>
+            <ul>
+                <li>The information provided is for general informational purposes only and does not constitute legal advice.</li>
+                <li>We do not guarantee the accuracy or completeness of the information provided.</li>
+                <li>You should consult with a qualified legal professional for specific legal advice.</li>
+                <li>You will not use this service for any illegal or unauthorized purpose.</li>
+                <li>We reserve the right to modify or discontinue the service at any time.</li>
+            </ul>
+        </div>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>
