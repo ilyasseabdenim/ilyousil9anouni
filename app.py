@@ -7,7 +7,7 @@ import os
 app = Flask(__name__)
 
 # Configuration
-API_KEY = "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"  # Note: In production, use environment variables
+API_KEY = ilyazy  # Note: In production, use environment variables
 ENDPOINT = "https://models.github.ai/inference"
 
 # Initialize the Azure AI client
