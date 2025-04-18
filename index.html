@@ -4,9 +4,514 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Moroccan Law Assistant | AI-Powered Legal Help</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <meta name="description" content="AI-powered assistant for Moroccan legal questions. Get information about Moroccan law, codes, and regulations.">
+    <style>
+        /* static/css/style.css */
+        :root {
+            --primary-color: #1a365d;
+            --secondary-color: #bf2d30;
+            --accent-color: #2c5282;
+            --light-color: #f7fafc;
+            --dark-color: #2d3748;
+            --user-message-bg: #2c5282;
+            --bot-message-bg: #edf2f7;
+            --border-radius: 8px;
+            --transition-speed: 0.3s;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f8f9fb;
+            color: var(--dark-color);
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header styles */
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 20px 0;
+            border-bottom: 2px solid var(--primary-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+        }
+
+        .logo i {
+            font-size: 2rem;
+            color: var(--secondary-color);
+            margin-right: 15px;
+        }
+
+        .logo h1 {
+            font-size: 1.8rem;
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .language-select select {
+            padding: 8px 12px;
+            border: 1px solid var(--primary-color);
+            border-radius: var(--border-radius);
+            background-color: white;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: border-color var(--transition-speed);
+        }
+
+        .language-select select:hover {
+            border-color: var(--accent-color);
+        }
+
+        /* Main content styles */
+        main {
+            flex: 1;
+            padding: 30px 0;
+        }
+
+        .intro {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .intro h2 {
+            color: var(--primary-color);
+            margin-bottom: 15px;
+            font-weight: 600;
+        }
+
+        .intro p {
+            color: #4a5568;
+            margin-bottom: 20px;
+            max-width: 700px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        .features {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 25px 0;
+        }
+
+        .feature {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .feature i {
+            font-size: 1.8rem;
+            color: var(--accent-color);
+        }
+
+        .feature span {
+            font-weight: 500;
+            color: var(--dark-color);
+        }
+
+        .disclaimer {
+            font-size: 0.9rem;
+            color: #718096;
+            font-style: italic;
+            margin-top: 20px;
+        }
+
+        /* Suggestion chips */
+        .suggestion-chips {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+            justify-content: center;
+        }
+
+        .suggestion-chip {
+            background-color: white;
+            border: 1px solid #e2e8f0;
+            border-radius: 20px;
+            padding: 8px 15px;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all var(--transition-speed);
+        }
+
+        .suggestion-chip:hover {
+            background-color: #f1f5f9;
+            border-color: var(--accent-color);
+        }
+
+        /* Chat container styles */
+        .chat-container {
+            background-color: white;
+            border-radius: var(--border-radius);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            overflow: hidden;
+            margin-bottom: 30px;
+        }
+
+        .chat-messages {
+            height: 450px;
+            overflow-y: auto;
+            padding: 20px;
+            scroll-behavior: smooth;
+        }
+
+        .message {
+            display: flex;
+            margin-bottom: 20px;
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: var(--accent-color);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-right: 15px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .user-message .message-avatar {
+            background-color: var(--secondary-color);
+        }
+
+        .message-content {
+            background-color: var(--bot-message-bg);
+            padding: 15px;
+            border-radius: var(--border-radius);
+            max-width: 80%;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
+        }
+
+        .message-content p {
+            margin-bottom: 10px;
+        }
+
+        .message-content p:last-child {
+            margin-bottom: 0;
+        }
+
+        .message-content a {
+            color: var(--accent-color);
+            text-decoration: underline;
+        }
+
+        .message-content ul, .message-content ol {
+            margin: 10px 0;
+            padding-left: 20px;
+        }
+
+        .message-content code {
+            background-color: #edf2f7;
+            padding: 2px 5px;
+            border-radius: 4px;
+            font-family: monospace;
+            font-size: 0.9em;
+        }
+
+        .message-content pre {
+            background-color: #2d3748;
+            color: #e2e8f0;
+            padding: 15px;
+            border-radius: 5px;
+            overflow-x: auto;
+            margin: 10px 0;
+        }
+
+        .user-message {
+            flex-direction: row-reverse;
+        }
+
+        .user-message .message-avatar {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+
+        .user-message .message-content {
+            background-color: var(--user-message-bg);
+            color: white;
+        }
+
+        .chat-input {
+            display: flex;
+            padding: 15px;
+            border-top: 1px solid #e2e8f0;
+            background-color: #f8fafc;
+        }
+
+        #user-input {
+            flex: 1;
+            border: 1px solid #e2e8f0;
+            border-radius: var(--border-radius);
+            padding: 12px 15px;
+            font-size: 1rem;
+            resize: none;
+            height: 50px;
+            transition: border-color var(--transition-speed);
+        }
+
+        #user-input:focus {
+            border-color: var(--accent-color);
+            outline: none;
+        }
+
+        #send-button {
+            width: 50px;
+            height: 50px;
+            border: none;
+            background-color: var(--accent-color);
+            color: white;
+            border-radius: var(--border-radius);
+            margin-left: 10px;
+            cursor: pointer;
+            transition: background-color var(--transition-speed);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        #send-button:hover {
+            background-color: #2a4365;
+        }
+
+        #send-button i {
+            font-size: 1.2rem;
+        }
+
+        /* Footer styles */
+        footer {
+            padding: 20px 0;
+            text-align: center;
+            font-size: 0.9rem;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .footer-links {
+            margin-top: 10px;
+        }
+
+        .footer-links a {
+            color: var(--accent-color);
+            margin: 0 10px;
+            text-decoration: none;
+            transition: color var(--transition-speed);
+        }
+
+        .footer-links a:hover {
+            color: var(--primary-color);
+            text-decoration: underline;
+        }
+
+        .disclaimer-text {
+            font-size: 0.8rem;
+            font-style: italic;
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 10% auto;
+            padding: 30px;
+            border-radius: var(--border-radius);
+            width: 80%;
+            max-width: 700px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            position: relative;
+            animation: modalFadeIn 0.3s;
+        }
+
+        @keyframes modalFadeIn {
+            from {opacity: 0; transform: translateY(-50px);}
+            to {opacity: 1; transform: translateY(0);}
+        }
+
+        .modal-content h2 {
+            color: var(--primary-color);
+            margin-bottom: 20px;
+        }
+
+        .modal-content h3 {
+            color: var(--accent-color);
+            margin: 15px 0 10px 0;
+        }
+
+        .modal-content p {
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .modal-content ul {
+            margin: 15px 0;
+            padding-left: 20px;
+        }
+
+        .modal-content li {
+            margin-bottom: 8px;
+        }
+
+        .close-button {
+            position: absolute;
+            top: 15px;
+            right: 20px;
+            font-size: 1.5rem;
+            cursor: pointer;
+            color: var(--dark-color);
+        }
+
+        .close-button:hover {
+            color: var(--secondary-color);
+        }
+
+        /* RTL support for Arabic */
+        [lang="ar"] {
+            direction: rtl;
+            text-align: right;
+        }
+
+        [lang="ar"] .logo i {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+
+        [lang="ar"] .user-message .message-avatar {
+            margin-right: 15px;
+            margin-left: 0;
+        }
+
+        [lang="ar"] .bot-message .message-avatar {
+            margin-right: 0;
+            margin-left: 15px;
+        }
+
+        [lang="ar"] .message-content ul, 
+        [lang="ar"] .message-content ol {
+            padding-left: 0;
+            padding-right: 20px;
+        }
+
+        [lang="ar"] #send-button {
+            margin-left: 0;
+            margin-right: 10px;
+        }
+
+        /* Loading animation */
+        .loading-dots {
+            display: inline-block;
+        }
+
+        .loading-dots:after {
+            content: '.';
+            animation: dots 1.5s steps(5, end) infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% {
+                content: '.';
+            }
+            40% {
+                content: '..';
+            }
+            60% {
+                content: '...';
+            }
+            80%, 100% {
+                content: '';
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .logo h1 {
+                font-size: 1.4rem;
+            }
+            
+            .chat-messages {
+                height: 400px;
+            }
+            
+            .message-content {
+                max-width: 90%;
+            }
+            
+            .features {
+                flex-direction: column;
+                gap: 15px;
+            }
+            
+            .modal-content {
+                width: 90%;
+                margin: 15% auto;
+                padding: 20px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .suggestion-chips {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            
+            .suggestion-chip {
+                text-align: center;
+            }
+            
+            .chat-messages {
+                height: 350px;
+            }
+            
+            .message-content {
+                max-width: 95%;
+            }
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -128,6 +633,357 @@
         </div>
     </div>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        // static/js/script.js
+        document.addEventListener('DOMContentLoaded', function() {
+            const chatMessages = document.getElementById('chat-messages');
+            const userInput = document.getElementById('user-input');
+            const sendButton = document.getElementById('send-button');
+            const languageSelector = document.getElementById('language-selector');
+            const suggestionChips = document.querySelectorAll('.suggestion-chip');
+            
+            // Modal elements
+            const aboutLink = document.getElementById('about-link');
+            const privacyLink = document.getElementById('privacy-link');
+            const termsLink = document.getElementById('terms-link');
+            const aboutModal = document.getElementById('about-modal');
+            const privacyModal = document.getElementById('privacy-modal');
+            const termsModal = document.getElementById('terms-modal');
+            const closeButtons = document.querySelectorAll('.close-button');
+            
+            // Language translations for UI elements
+            const translations = {
+                en: {
+                    placeholder: "Type your legal question here...",
+                    intro: "Your AI Legal Assistant for Moroccan Law",
+                    description: "Ask questions about Moroccan legal codes, procedures, and regulations.",
+                    disclaimer: "This is an AI assistant and should not replace professional legal advice.",
+                    chips: {
+                        business: "Starting a business",
+                        family: "Family code",
+                        property: "Property laws",
+                        divorce: "Divorce procedures"
+                    },
+                    thinking: "Thinking",
+                    errorMessage: "Sorry, there was an error processing your request. Please try again later."
+                },
+                fr: {
+                    placeholder: "Posez votre question juridique ici...",
+                    intro: "Votre assistant juridique IA pour le droit marocain",
+                    description: "Posez des questions sur les codes, procédures et réglementations juridiques marocains.",
+                    disclaimer: "Ceci est un assistant IA et ne doit pas remplacer un avis juridique professionnel.",
+                    chips: {
+                        business: "Créer une entreprise",
+                        family: "Code de la famille",
+                        property: "Lois immobilières",
+                        divorce: "Procédures de divorce"
+                    },
+                    thinking: "Réflexion en cours",
+                    errorMessage: "Désolé, une erreur s'est produite lors du traitement de votre demande. Veuillez réessayer plus tard."
+                },
+                ar: {
+                    placeholder: "اكتب سؤالك القانوني هنا...",
+                    intro: "مساعدك القانوني بالذكاء الاصطناعي للقانون المغربي",
+                    description: "اطرح أسئلة حول القوانين والإجراءات واللوائح المغربية.",
+                    disclaimer: "هذا مساعد ذكاء اصطناعي ولا ينبغي أن يحل محل المشورة القانونية المهنية.",
+                    chips: {
+                        business: "بدء عمل تجاري",
+                        family: "مدونة الأسرة",
+                        property: "قوانين العقارات",
+                        divorce: "إجراءات الطلاق"
+                    },
+                    thinking: "جاري التفكير",
+                    errorMessage: "عذرًا، حدث خطأ أثناء معالجة طلبك. يرجى المحاولة مرة أخرى لاحقًا."
+                }
+            };
+            
+            // Chat history (useful for summarizing context)
+            let chatHistory = [];
+            const MAX_HISTORY_LENGTH = 10;
+            
+            // Initialize to detect user's browser language
+            function initializeLanguage() {
+                const browserLang = navigator.language.split('-')[0]; // Get the language code
+                if (browserLang === 'fr') {
+                    languageSelector.value = 'fr';
+                    changeLanguage('fr');
+                } else if (browserLang === 'ar') {
+                    languageSelector.value = 'ar';
+                    changeLanguage('ar');
+                }
+            }
+            
+            // Handle language change
+            languageSelector.addEventListener('change', function() {
+                const lang = this.value;
+                changeLanguage(lang);
+            });
+            
+            function changeLanguage(lang) {
+                // Update placeholder text
+                userInput.placeholder = translations[lang].placeholder;
+                
+                // Update intro text
+                document.querySelector('#intro-text h2').textContent = translations[lang].intro;
+                document.querySelector('#intro-text p').textContent = translations[lang].description;
+                document.querySelector('#intro-text .disclaimer').textContent = translations[lang].disclaimer;
+                
+                // Update suggestion chips
+                const chips = document.querySelectorAll('.suggestion-chip');
+                chips[0].textContent = translations[lang].chips.business;
+                chips[1].textContent = translations[lang].chips.family;
+                chips[2].textContent = translations[lang].chips.property;
+                chips[3].textContent = translations[lang].chips.divorce;
+                
+                // Set text direction for Arabic
+                if (lang === 'ar') {
+                    document.documentElement.setAttribute('lang', 'ar');
+                    document.body.classList.add('rtl');
+                } else {
+                    document.documentElement.setAttribute('lang', lang);
+                    document.body.classList.remove('rtl');
+                }
+            }
+            
+            // Handle suggestion chips
+            suggestionChips.forEach(chip => {
+                chip.addEventListener('click', function() {
+                    const query = this.getAttribute('data-query');
+                    userInput.value = query;
+                    sendMessage();
+                });
+            });
+            
+            // Send message when user clicks send button
+            sendButton.addEventListener('click', sendMessage);
+            
+            // Send message when user presses Enter key (without Shift)
+            userInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' && !e.shiftKey) {
+                    e.preventDefault();
+                    sendMessage();
+                }
+            });
+            
+            // Focus on input when page loads
+            userInput.focus();
+            
+            // Handle modal dialogs
+            aboutLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                aboutModal.style.display = 'block';
+            });
+            
+            privacyLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                privacyModal.style.display = 'block';
+            });
+            
+            termsLink.addEventListener('click', function(e) {
+                e.preventDefault();
+                termsModal.style.display = 'block';
+            });
+            
+            closeButtons.forEach(button => {
+                button.addEventListener('click', function() {
+                    aboutModal.style.display = 'none';
+                    privacyModal.style.display = 'none';
+                    termsModal.style.display = 'none';
+                });
+            });
+            
+            // Close modal when clicking outside of it
+            window.addEventListener('click', function(e) {
+                if (e.target === aboutModal) {
+                    aboutModal.style.display = 'none';
+                }
+                if (e.target === privacyModal) {
+                    privacyModal.style.display = 'none';
+                }
+                if (e.target === termsModal) {
+                    termsModal.style.display = 'none';
+                }
+            });
+            
+            function sendMessage() {
+                const message = userInput.value.trim();
+                
+                if (message === '') return;
+                
+                // Add user message to chat
+                addMessage('user', message);
+                
+                // Add to chat history
+                chatHistory.push({role: 'user', content: message});
+                if (chatHistory.length > MAX_HISTORY_LENGTH) {
+                    chatHistory.shift(); // Remove oldest message if history is too long
+                }
+                
+                // Clear input field
+                userInput.value = '';
+                
+                // Show loading indicator
+                const lang = languageSelector.value;
+                const loadingId = showLoading(translations[lang].thinking);
+                
+                // Send message to server
+                fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ message: message }),
+                })
+                .then(response => response.json())
+                .then(data => {
+                    // Remove loading indicator
+                    removeLoading(loadingId);
+                    
+                    if (data.error) {
+                        // Show error message
+                        const lang = languageSelector.value;
+                        addMessage('bot', translations[lang].errorMessage);
+                        console.error('Error:', data.error);
+                    } else {
+                        // Add bot response to chat
+                        addMessage('bot', data.response);
+                        
+                        // Add to chat history
+                        chatHistory.push({role: 'assistant', content: data.response});
+                        if (chatHistory.length > MAX_HISTORY_LENGTH) {
+                            chatHistory.shift();
+                        }
+                    }
+                    
+                    // Focus back on input field
+                    userInput.focus();
+                })
+                .catch(error => {
+                    // Remove loading indicator
+                    removeLoading(loadingId);
+                    
+                    // Show error message
+                    const lang = languageSelector.value;
+                    addMessage('bot', translations[lang].errorMessage);
+                    console.error('Connection error:', error);
+                    
+                    // Focus back on input field
+                    userInput.focus();
+                });
+            }
+            
+            function addMessage(sender, message) {
+                const messageDiv = document.createElement('div');
+                messageDiv.classList.add('message');
+                
+                if (sender === 'user') {
+                    messageDiv.classList.add('user-message');
+                } else {
+                    messageDiv.classList.add('bot-message');
+                }
+                
+                const avatar = document.createElement('div');
+                avatar.classList.add('message-avatar');
+                
+                const icon = document.createElement('i');
+                icon.classList.add('fas');
+                
+                if (sender === 'user') {
+                    icon.classList.add('fa-user');
+                } else {
+                    icon.classList.add('fa-robot');
+                }
+                
+                avatar.appendChild(icon);
+                
+                const content = document.createElement('div');
+                content.classList.add('message-content');
+                
+                // Process message for markdown-like formatting
+                message = processMessage(message);
+                
+                content.innerHTML = message;
+                
+                messageDiv.appendChild(avatar);
+                messageDiv.appendChild(content);
+                
+                chatMessages.appendChild(messageDiv);
+                
+                // Scroll to bottom
+                scrollToBottom();
+            }
+            
+            function processMessage(message) {
+                // Convert line breaks to <br>
+                message = message.replace(/\n/g, '<br>');
+                
+                // Process code blocks (```)
+                message = message.replace(/```([\s\S]*?)```/g, '<pre><code>$1</code></pre>');
+                
+                // Process inline code (`)
+                message = message.replace(/`([^`]+)`/g, '<code>$1</code>');
+                
+                // Process bold (**text**)
+                message = message.replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>');
+                
+                // Process italic (*text*)
+                message = message.replace(/\*(.*?)\*/g, '<em>$1</em>');
+                
+                // Process links
+                message = message.replace(/\[(.*?)\]\((.*?)\)/g, '<a href="$2" target="_blank">$1</a>');
+                
+                // Process unordered lists
+                message = message.replace(/^\s*[-*]\s+(.*?)$/gm, '<li>$1</li>');
+                message = message.replace(/(<li>.*?<\/li>)/gs, '<ul>$1</ul>');
+                
+                // Process ordered lists
+                message = message.replace(/^\s*(\d+)\.\s+(.*?)$/gm, '<li>$2</li>');
+                message = message.replace(/(<li>.*?<\/li>)/gs, '<ol>$1</ol>');
+                
+                return message;
+            }
+            
+            function showLoading(thinkingText = 'Thinking') {
+                const loadingDiv = document.createElement('div');
+                loadingDiv.classList.add('message', 'bot-message', 'loading-message');
+                
+                const avatar = document.createElement('div');
+                avatar.classList.add('message-avatar');
+                
+                const icon = document.createElement('i');
+                icon.classList.add('fas', 'fa-robot');
+                avatar.appendChild(icon);
+                
+                const content = document.createElement('div');
+                content.classList.add('message-content');
+                content.innerHTML = `${thinkingText}<span class="loading-dots"></span>`;
+                
+                loadingDiv.appendChild(avatar);
+                loadingDiv.appendChild(content);
+                
+                chatMessages.appendChild(loadingDiv);
+                
+                // Scroll to bottom
+                scrollToBottom();
+                
+                return Date.now(); // Return unique ID for this loading indicator
+            }
+            
+            function removeLoading(id) {
+                const loadingMessages = document.querySelectorAll('.loading-message');
+                if (loadingMessages.length > 0) {
+                    loadingMessages[loadingMessages.length - 1].remove();
+                }
+            }
+            
+            function scrollToBottom() {
+                // Smooth scroll to bottom of chat
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+            
+            // Initialize language
+            initializeLanguage();
+        });
+    </script>
 </body>
 </html>
