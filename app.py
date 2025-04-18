@@ -4,6 +4,7 @@ from azure.ai.inference.models import UserMessage, SystemMessage
 from azure.core.credentials import AzureKeyCredential
 import os
 
+load_dotenv()
 app = Flask(__name__)
 
 # Configuration
